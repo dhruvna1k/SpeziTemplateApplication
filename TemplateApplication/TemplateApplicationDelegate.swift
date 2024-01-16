@@ -21,6 +21,23 @@ import SwiftUI
 class TemplateApplicationDelegate: SpeziAppDelegate {
     override var configuration: Configuration {
         Configuration(standard: TemplateApplicationStandard()) {
+            if HKHealthStore.isHealthDataAvailable(){
+                HealthKit{
+                    CollectSample(
+                        HKQuantityType(.stepCount),
+                        deliverySetting: .background(.afterAuthorizationAndApplicationWillLaunch)
+                    )
+                    CollectSample(
+                        HKQuantityType(.activeEnergyBurned),
+                        deliverySetting: .anchorQuery(.afterAuthorizationAndApplicationWillLaunch)
+                    )
+                    CollectSample(
+                        HKQuantityType(.restingHeartRate),
+                        deliverySetting: .manual()
+                    )
+                }
+            }
+
             if !FeatureFlags.disableFirebase {
                 AccountConfiguration(configuration: [
                     .requires(\.userId),
